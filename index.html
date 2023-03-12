@@ -1,0 +1,76 @@
+<html>
+<head>
+<style>
+/* Define some style for the webpage */
+body {
+  background-image: url("https://images.unsplash.com/photo-1513151233558-d860c5398176?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8dG9waWN8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=60"); /* Use a random image from Unsplash as background  */
+  background-size: cover;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  text-align: center;
+  color: black;
+  font-size: 10em;
+}
+
+p {
+  text-align: center;
+  color: black;
+  font-size: 8em;
+  margin: 20px;
+}
+/* Add a semi transparent div behind the header and text */
+div {
+  position: relative; /* Use relative positioning instead of absolute */
+  width:40%; /* Set a fixed width */
+  margin:auto; /* Center the div */
+  background-color: rgba(255,255,255,0.5); /* White with opacity of0.5 */
+  
+   /* Add some flexbox properties to align the text vertically and horizontally */
+   display:flex; 
+   flex-direction:column; 
+   justify-content:center; 
+   align-items:center;
+
+   height:100%;
+}
+</style>
+<script>
+function fetchRandomTopics() {
+  // Use Fetch API to get data from a random noun API 
+  fetch("https://random-word-form.herokuapp.com/random/noun")
+    .then(response => response.json()) // Convert response to JSON
+    .then(data => {
+      // Display the noun on the webpage
+ document.getElementById("topic").innerHTML = data[0][0].toUpperCase() + data[0].slice(1);
+     // Use Unsplash API to get a random image related to the noun 
+      document.body.style.backgroundImage = "url('https://source.unsplash.com/random/?" + data[0] + "')";
+    })
+    .catch(error => console.error(error)); // Handle errors
+}
+
+// Define a function to update the text of the website every x seconds
+function updateText() {
+  // Get the value of x from the query parameter t
+  let url = new URL(window.location.href);
+  let x = url.searchParams.get("t");
+  // If x is not a valid number, use a default value of 5 seconds
+  if (isNaN(x) || x <= 0) {
+    x = 5;
+  }
+  // Call fetchRandomTopics once at the beginning
+  fetchRandomTopics();
+  // Set an interval to call fetchRandomTopics every x seconds
+  setInterval(fetchRandomTopics, x * 1000);
+}
+</script>
+</head>
+<Title>🎲 Random Topic Generator</Title>
+<body onload="updateText()">
+<!-- Add a div element -->
+<div>
+<p id="topic"></p>
+</div>
+</body>
+</html>
